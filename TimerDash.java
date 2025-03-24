@@ -1,0 +1,193 @@
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class TimerDash extends JFrame {
+
+    class TimerBox extends JPanel {
+
+        private JLabel timerLabel;
+        JButton stop;
+        JButton reset;
+        private JButton start;
+        private JPanel control;
+        private Timer timer;
+        private int mins = 00, sec = 00;
+        JPanel timerVal;
+        JLabel timerValLabel;
+        JTextField timerValInp;
+        JTextField timerNameInp;
+        private String minsInpStr;
+        private String timerNameInpStr;
+        Color timerBoxBgColor = Color.DARK_GRAY;
+        Color timerBoxFgColor = Color.WHITE;
+        boolean isStarted = false;
+
+        public TimerBox() {
+
+            setLayout(new GridLayout(4, 1, 10, 10));
+            setPreferredSize(new Dimension(150, 150));
+            setBackground(timerBoxBgColor);
+            setBorder(new EmptyBorder(10, 10, 10, 10));
+
+            JPanel timerName = new JPanel(new GridLayout(1, 2));
+            timerName.setBackground(timerBoxBgColor);
+            JLabel timerNameLabel = new JLabel("Name: ", SwingConstants.CENTER);
+            timerNameLabel.setForeground(timerBoxFgColor);
+            timerNameLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            timerNameInp = new JTextField();
+            timerNameInp.setFont(new Font("Arial", Font.PLAIN, 20));
+            timerName.add(timerNameLabel);
+            timerName.add(timerNameInp);
+            add(timerName);
+    
+            timerVal = new JPanel(new GridLayout(1, 2));
+            timerVal.setBackground(timerBoxBgColor);
+            timerValLabel = new JLabel("Time (mins): ", SwingConstants.CENTER);
+            timerValLabel.setForeground(timerBoxFgColor);
+            timerValLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+            timerValInp = new JTextField();
+            timerValInp.setFont(new Font("Arial", Font.PLAIN, 20));
+            timerVal.add(timerValLabel);
+            timerVal.add(timerValInp);
+            add(timerVal);
+    
+            timerLabel = new JLabel(formatTime(mins, sec), SwingConstants.CENTER);
+            timerLabel.setFont(new Font("Arial", Font.BOLD, 35));
+            timerLabel.setForeground(Color.WHITE);
+            add(timerLabel);
+    
+            control = new JPanel(new GridLayout(1, 3, 10, 0));
+            control.setBackground(timerBoxBgColor);
+            start = new JButton("START");
+            start.setBackground(Color.GREEN);
+            start.addActionListener(e -> startTimer());
+            stop = new JButton("PAUSE");
+            stop.setBackground(Color.ORANGE);
+            stop.addActionListener(e -> stopTimer());
+            reset = new JButton("RESET");
+            reset.setBackground(Color.RED);
+            reset.addActionListener(e -> resetTimer());
+    
+            control.add(start);
+            control.add(stop);
+            control.add(reset);
+            add(control);
+        }
+
+        public void startTimer(){
+            minsInpStr = timerValInp.getText();
+            timerNameInpStr = timerNameInp.getText();
+            if(minsInpStr.isEmpty() || minsInpStr.equals("Enter time!")) {
+                timerValInp.setText("Enter time!");
+                return;
+            }
+            if(timerNameInpStr.isEmpty() || timerNameInpStr.equals("Enter name!")) {
+                timerNameInp.setText("Enter name!");
+                return;
+            }
+            if (!isStarted) {
+                mins = Integer.parseInt(minsInpStr);
+                isStarted = true;
+            }
+
+            if (timer == null || !timer.isRunning()) {
+                timer = new Timer(1000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        updateTimer();
+                    }
+                });
+                timer.start();
+            }
+        }
+
+        private void stopTimer() {
+            if(timer != null) {
+                timer.stop();
+            }
+        }
+
+        private void resetTimer() {
+            stopTimer();
+            mins = 0;
+            sec = 0;
+            isStarted = false;
+            timerLabel.setText(formatTime(mins, sec));
+        }
+
+        private void updateTimer() {
+            if(sec == 00 && mins == 00) {
+                stopTimer();
+                mins = 0;
+                sec = 0;
+                timerLabel.setText(formatTime(mins, sec));
+                JOptionPane.showMessageDialog(null, timerNameInpStr + " Timer Over!", "Timer Complete", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if (sec == 00) {
+                sec = 59;
+                mins--;
+                timerLabel.setText((formatTime(mins, sec)));
+                return;
+            }
+            sec--;
+            timerLabel.setText((formatTime(mins, sec)));
+        }
+
+        private String formatTime(int min, int sec) {
+            return String.format("%02d:%02d", min, sec);
+        }
+    }
+
+    private JPanel timerPanel;
+    private JButton addButton;
+    private ArrayList<TimerBox> timerBoxList;
+    public JLayeredPane layeredPane;
+    public JPanel addButtonPanel;
+
+    public TimerDash() {
+        setTitle("Timer Dashboard");
+        setSize(750, 750);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        timerBoxList = new ArrayList<>();
+
+        timerPanel = new JPanel(new GridLayout(2, 2, 15, 15));
+        timerPanel.setBackground(Color.LIGHT_GRAY);
+        timerPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        add(timerPanel, BorderLayout.CENTER);
+
+        addButtonPanel = new JPanel(new BorderLayout());
+        addButtonPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        addButton = new JButton("Add Timer");
+        addButton.setPreferredSize(new Dimension(120, 40));
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTimer();
+            }
+        });
+        addButtonPanel.add(addButton, BorderLayout.SOUTH);
+        add(addButtonPanel, BorderLayout.SOUTH);
+    }
+
+    private void addTimer() {
+        TimerBox box = new TimerBox();
+        timerBoxList.add(box);
+        timerPanel.add(box);
+        timerPanel.revalidate();
+        timerPanel.repaint();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            TimerDash frame = new TimerDash();
+            frame.setVisible(true);
+        });
+    }
+}
