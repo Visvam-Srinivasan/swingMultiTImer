@@ -47,7 +47,7 @@ public class TimerDash extends JFrame {
             timerName = new JPanel(new GridLayout(1, 3));
             timerName.setBackground(timerBoxBgColor);
             closeTimer = new JButton("X");
-            closeTimer.addActionListener(e -> closeCompo(this));
+            closeTimer.addActionListener(e -> closeTimeBox(this));
             timerNameLabel = new JLabel("Name: ", SwingConstants.CENTER);
             timerNameLabel.setForeground(timerBoxFgColor);
             timerNameLabel.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -162,7 +162,8 @@ public class TimerDash extends JFrame {
 
         }
 
-        private void closeCompo(TimerBox t){
+        private void closeTimeBox(TimerBox t){
+
 
         }
 
@@ -208,6 +209,13 @@ public class TimerDash extends JFrame {
         TimerBox box = new TimerBox();
         timerBoxList.add(box);
         timerPanel.add(box);
+        timerPanel.revalidate();
+        timerPanel.repaint();
+    }
+
+    public void closeTimeBox(TimerBox t) {
+        timerPanel.remove(t);
+        timerBoxList.remove(t);
         timerPanel.revalidate();
         timerPanel.repaint();
     }
