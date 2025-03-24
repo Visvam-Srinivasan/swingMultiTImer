@@ -9,10 +9,10 @@ public class TimerDash extends JFrame {
 
     class TimerBox extends JPanel {
 
-        private Color timerBoxBgColor = Color.DARK_GRAY;
+        private Color timerBoxBgColor = Color.BLACK;
         private Color timerBoxFgColor = Color.WHITE;
 
-        private JPanel timerName;
+        private JPanel timerInp;
         private JButton closeTimer;
         private JLabel timerNameLabel;
         private JTextField timerNameInp;
@@ -38,28 +38,37 @@ public class TimerDash extends JFrame {
 
         public TimerBox() {
             //Panel format
-            setLayout(new GridLayout(4, 1, 10, 10));
+            setLayout(new GridBagLayout());
             setPreferredSize(new Dimension(150, 150));
             setBackground(timerBoxBgColor);
             setBorder(new EmptyBorder(10, 10, 10, 10));
 
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.fill = GridBagConstraints.BOTH;
+            gbc.insets = new Insets(5, 5, 5, 5);
+
+            gbc.gridy = 0;
+            gbc.gridx = 1;
+            gbc.weightx = 0;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.anchor = GridBagConstraints.NORTHEAST;
             closeTimer = new JButton("X");
             closeTimer.addActionListener(e -> closeTimeBox(this));
-            closeTimer.setPreferredSize(new Dimension(10, 10));
-            add(closeTimer);
+            add(closeTimer, gbc);
+            gbc.fill = GridBagConstraints.BOTH;
 
-            //Name input
-            timerName = new JPanel(new GridLayout(2, 2, 5, 5));
-            timerName.setBackground(timerBoxBgColor);
+
+            //Name and Time inputs
+            timerInp = new JPanel(new GridLayout(2, 2, 5, 5));
+            timerInp.setBackground(timerBoxBgColor);
             timerNameLabel = new JLabel("Name: ", SwingConstants.CENTER);
             timerNameLabel.setForeground(timerBoxFgColor);
             timerNameLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             timerNameInp = new JTextField();
             timerNameInp.setFont(new Font("Arial", Font.PLAIN, 20));
-            timerName.add(timerNameLabel);
-            timerName.add(timerNameInp);
+            timerInp.add(timerNameLabel);
+            timerInp.add(timerNameInp);
             
-            //Time input
             timerVal = new JPanel(new GridLayout(1, 2));
             timerVal.setBackground(timerBoxBgColor);
             timerValLabel = new JLabel("Time (mins): ", SwingConstants.CENTER);
@@ -67,37 +76,56 @@ public class TimerDash extends JFrame {
             timerValLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             timerValInp = new JTextField();
             timerValInp.setFont(new Font("Arial", Font.PLAIN, 20));
-            timerName.add(timerValLabel);
-            timerName.add(timerValInp);
-            add(timerName);
+            timerInp.add(timerValLabel);
+            timerInp.add(timerValInp);
+
+            gbc.gridy = 1;
+            gbc.gridx = 0;
+            gbc.gridwidth = 2;
+            gbc.weightx = 1.0;
+            gbc.weighty = 1;
+            add(timerInp, gbc);
             
             //Timer output
             timerLabel = new JLabel(formatTime(mins, sec), SwingConstants.CENTER);
-            timerLabel.setFont(new Font("Arial", Font.BOLD, 35));
+            timerLabel.setFont(new Font("Arial", Font.BOLD, 50));
             timerLabel.setForeground(Color.WHITE);
-            add(timerLabel);
+            timerLabel.setOpaque(true);
+            timerLabel.setBackground(Color.BLACK);
+
+            gbc.gridy = 2;
+            gbc.weighty = 4;
+            add(timerLabel, gbc);
     
             //Timer Controls
             control = new JPanel(new GridLayout(1, 4, 10, 0));
             control.setBackground(timerBoxBgColor);
+
             start = new JButton("START");
             start.setBackground(Color.GREEN);
             start.addActionListener(e -> startTimer());
+
             stop = new JButton("PAUSE");
             stop.setBackground(Color.ORANGE);
             stop.addActionListener(e -> stopTimer());
+
             reset = new JButton("RESET");
             reset.setBackground(Color.RED);
             reset.addActionListener(e -> resetTimer());
+
             noteTime = new JButton("NOTE TIME");
             noteTime.setBackground(Color.CYAN);
             noteTime.addActionListener(e -> noteTimer());
-            control.add(start);
-            control.add(stop);
-            control.add(reset);
-            control.add(noteTime);
 
-            add(control);
+
+            control.add(start, gbc);
+            control.add(stop, gbc);
+            control.add(reset, gbc);
+            control.add(noteTime, gbc);
+
+            gbc.gridy = 3;
+            gbc.weighty = 1;
+            add(control, gbc);
         }
 
         public void startTimer(){
@@ -114,6 +142,7 @@ public class TimerDash extends JFrame {
             if (!isStarted) {
                 mins = Integer.parseInt(minsInpStr);
                 isStarted = true;
+                addStartToNote();
             }
 
             if (timer == null || !timer.isRunning()) {
@@ -162,6 +191,11 @@ public class TimerDash extends JFrame {
 
         private void noteTimer() {
 
+
+        }
+
+        private void addStartToNote() {
+
         }
 
         private String formatTime(int min, int sec) {
@@ -186,13 +220,14 @@ public class TimerDash extends JFrame {
 
         //Time box background panel
         timerPanel = new JPanel(new GridLayout(2, 2, 15, 15));
-        timerPanel.setBackground(Color.LIGHT_GRAY);
+        timerPanel.setBackground(Color.GRAY);
         timerPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         add(timerPanel, BorderLayout.CENTER);
 
         //Add timer button
         addButtonPanel = new JPanel(new BorderLayout());
         addButtonPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
+        addButtonPanel.setBackground(Color.GRAY);
         addButton = new JButton("Add Timer");
         addButton.setPreferredSize(new Dimension(120, 40));
         addButton.addActionListener(new ActionListener() {
@@ -224,6 +259,7 @@ public class TimerDash extends JFrame {
         SwingUtilities.invokeLater(() -> {
             TimerDash frame = new TimerDash();
             frame.setVisible(true);
+
         });
     }
 }
