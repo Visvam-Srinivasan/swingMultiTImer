@@ -9,25 +9,32 @@ public class TimerDash extends JFrame {
 
     class TimerBox extends JPanel {
 
+        private Color timerBoxBgColor = Color.DARK_GRAY;
+        private Color timerBoxFgColor = Color.WHITE;
+
+        private JPanel timerName;
+        private JButton closeTimer;
+        private JLabel timerNameLabel;
+        private JTextField timerNameInp;
+
+        private JPanel timerVal;
+        private JLabel timerValLabel;
+        private JTextField timerValInp;
+
         private JLabel timerLabel;
-        JButton stop;
-        JButton reset;
+
+        private JButton stop;
+        private JButton reset;
         private JButton start;
         private JButton noteTime;
         private JPanel control;
+
         private Timer timer;
         private int mins = 00, sec = 00;
-        JPanel timerVal;
-        JLabel timerValLabel;
-        JTextField timerValInp;
-        JTextField timerNameInp;
+
         private String minsInpStr;
         private String timerNameInpStr;
-        Color timerBoxBgColor = Color.DARK_GRAY;
-        Color timerBoxFgColor = Color.WHITE;
         boolean isStarted = false;
-        JLabel timerNameLabel;
-        JPanel timerName
 
         public TimerBox() {
             //Panel format
@@ -39,7 +46,8 @@ public class TimerDash extends JFrame {
             //Name input
             timerName = new JPanel(new GridLayout(1, 3));
             timerName.setBackground(timerBoxBgColor);
-
+            closeTimer = new JButton("X");
+            closeTimer.addActionListener(e -> closeCompo(this));
             timerNameLabel = new JLabel("Name: ", SwingConstants.CENTER);
             timerNameLabel.setForeground(timerBoxFgColor);
             timerNameLabel.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -151,6 +159,10 @@ public class TimerDash extends JFrame {
         }
 
         private void noteTimer() {
+
+        }
+
+        private void closeCompo(TimerBox t){
 
         }
 
