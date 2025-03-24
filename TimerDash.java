@@ -53,6 +53,7 @@ public class TimerDash extends JFrame {
             timerNameLabel.setFont(new Font("Arial", Font.PLAIN, 20));
             timerNameInp = new JTextField();
             timerNameInp.setFont(new Font("Arial", Font.PLAIN, 20));
+            timerName.add(closeTimer);
             timerName.add(timerNameLabel);
             timerName.add(timerNameInp);
             add(timerName);
@@ -159,11 +160,6 @@ public class TimerDash extends JFrame {
         }
 
         private void noteTimer() {
-
-        }
-
-        private void closeTimeBox(TimerBox t){
-
 
         }
 
